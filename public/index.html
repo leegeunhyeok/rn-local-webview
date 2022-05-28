@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1">
+    <title>LocalWebView</title>
+  </head>
+  <body>
+    <h1 id="token">...</h1>
+    <div>
+      <button id="refresh">Refresh</button>
+    </div>
+    <div>
+      <input id="field" type="text">
+      <button id="send">Send</button>
+    </div>
+  </body>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script>
+    // counter for `injectedJavascript`
+    window.injected = 0;
+
+    function logger (message, isError) {
+      const element = document.createElement('p');
+      element.textContent = message;
+      element.style.color = isError ? 'red' : 'black';
+      document.body.append(element);
+      console.log(message);
+    }
+
+    const fallbackAppBridgeModule = {
+      LocalWebView () {
+        alert('No bridge module found');
+      }
+    };
+
+    const clientBridgeModule = {
+      _queue: [],
+      LocalWebView (data) {
+        try {
+          this._queue.push(JSON.parse(data));
+          logger('LocalWebView queued (size: ' + this._queue.length + '): ' + data);
+        } catch (error) {
+          logger('LocalWebView ' + error.message, true);
+        }
+      }
+    };
+    
+    window.client = clientBridgeModule;
+    window.app = window.ReactNativeWebView || fallbackAppBridgeModule;
+
+    window.onload = () => {
+      const rnCookie = document.cookie.split(';')
+        .map((kv) => kv.trim().split('='))
+        .find(([key]) => key === 'rn_token');
+
+      const token = (rnCookie || [])[1] // value;
+      
+      document.getElementById('token').textContent = `TOKEN (from cookie): ${token ? token : 'UNKNOWN'}`;
+
+      document.getElementById('refresh').onclick = () => {
+        location.reload();
+      };
+    
+      document.getElementById('send').onclick = () => {
+        var value = document.getElementById('field').value;
+        // Web -> App
+        window.app.LocalWebView(JSON.stringify(value));
+      };
+    };
+
+  </script>
+</html>
