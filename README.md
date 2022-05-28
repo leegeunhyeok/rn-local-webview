@@ -25,7 +25,7 @@ React Native 로컬 웹뷰 테스트 코드
     - 개발자 도구에서 네트워크 Offline 상태 + 캐시 비활성화한 상태임에도 정상적으로 페이지를 로드하고 있음
     ![browser](https://user-images.githubusercontent.com/26512984/170840981-67031202-b17d-4a30-b4f3-1605eeb545cf.png)
 - 테스트 번들
-  - Next 기반 웹 애플리케이션 빌드 결과를 static 페이지로 추출 후 압축
+  - Next 기반 샘플 웹 애플리케이션 빌드 결과를 static 페이지로 추출 후 압축
   - https://github.com/leegeunhyeok/leegeunhyeok/files/8791678/bundle.zip
 
 ## 참고
